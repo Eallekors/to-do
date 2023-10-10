@@ -1,5 +1,6 @@
 const express = require("express")
 const app = express()
+const fs=require("fs");
 
 // use ejs files to prepare templates for views
 const path = require("path")
@@ -13,10 +14,9 @@ app.get("/",(req, res) => {
 			console.error(err);
 			return;
 		}
-		console.log(data);
-		console.log(typeof data);
+	
 		// task list data
-		const tasks = ["Study HTML","Study CSS","Study JS","Study OOP"]
+		const tasks = data.split("\n")
 		res.render("index",{tasks: tasks})
 	});
 	
