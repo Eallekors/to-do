@@ -34,6 +34,8 @@ const writeFile = (filename, data) => {
 	})
 }
 
+
+
 /*const selectAnddel(index) => {
 	const selectedValue = fs.readFile
 }*/
@@ -89,6 +91,19 @@ app.get('/delete-task/:taskId', (req, res) => {
 	})
 })
 
+app.get('/delete-tasks', (req, res) => {
+	console.log("Delete all Tasks")
+	readFile("./tasks.json")
+	.then(tasks => {
+		console.log(tasks);
+		tasks.splice(0,tasks.length)
+		data = JSON.stringify(tasks, null,2)
+	writeFile("tasks.json", data)
+	})
+	
+
+	res.redirect("/")
+})
 
 app.listen(3001, () => {
 	console.log("example app is started at http://localhost:3001")
