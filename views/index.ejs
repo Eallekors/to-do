@@ -26,24 +26,45 @@
         		<% } %>
           <span class="card-title">ToDo List</span>
 				<div class="row">
-							<form class="col s12" method="post" actions="/">
+							<% if (update) { %>
+							<div class="row">
+                  <form class="col s12" action="/update-task/<%= task.id %>" method="POST">
+                  <div class="row">
+                  <div class="input-field col s12">
+                    <input placeholder="Task" type="text" name="updatedTask" value="<%= task.task %>"> 
+                    <label for="updatedTask">Update Task</label>
+                  </div>
+                  </div>
+                  <button class="btn" type="submit">Update Task</button>
+
+                  <a class="btn" href="/">Cancel</a>
+                  </form>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    </div>  
+        <% }else{ %>    
+    		<form class="col s12" method="post" actions="/">
 							  	<div class="row">
 							    <div class="input-field col s12">
 							      <input placeholder="Task" id="task" type="text" name="task">
 							      <label for="task">Instart Task</label>
 							    </div>
 							  	</div>
-							  <input class="btn" type="submit" value="Add Task">
+								<input class="btn" type="submit" value="Add Task">
 							</form> 
 			        	</div>
 			        </div>
 			   	<div class="card-action">
 			   		<ul class="collection">
 				     <% tasks.forEach((task, index) => { %>
-				       		<li class="collection-item"><%= task.task %>
+				       	<li class="collection-item"><%= task.task %>
 				       		<a href="delete-task/<%= task.id %>" class="secondary-content"><i class="material-icons">delete</i></a>
+				       		<a href="update-task/<%= task.id %>" class="secondary-content"><i class="material-icons">edit</i></a>
 				       	</li>
-				    <% }) %>   
+				    	<% }) %>
 				    </ul>		
 				    <a href="delete-tasks" class="btn">Clear All</a>
      			</div>
@@ -51,8 +72,7 @@
  		</div>
 	</div>
 </div>
-            
-    		
+<% } %>
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     </body>

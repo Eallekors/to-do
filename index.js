@@ -42,11 +42,13 @@ const writeFile = (filename, data) => {
 
 app.get('/',(req, res) => {
 	// get data from file
+	
 	readFile("./tasks.json")
 		.then(tasks => {
 			res.render("index", {
 				tasks: tasks,
-				error: null
+				error: null,
+				update: false
 			})
 		})
 	})
@@ -64,7 +66,8 @@ app.post("/", (req, res) => {
 		.then(tasks => {
 			res.render("index", {
 				tasks: tasks,
-				error: error
+				error: error,
+				update: false
 		})
 	})
 	}else{
@@ -117,9 +120,60 @@ app.get('/delete-tasks', (req, res) => {
 		data = JSON.stringify(tasks, null,2)
 	writeFile("tasks.json", data)
 	res.redirect("/")
-	})
+	})  
 	
 })
+
+app.get('/update-task/:taskId', (req, res) => {
+    const taskId = parseInt(req.params.taskId);
+    readFile("./tasks.json")
+        .then(tasks => {
+        	console.log(`Task for updating => ${JSON.stringify(tasks[taskId-1])}`) 
+            const taskToUpdate = tasks.find(task => task.id === taskId);
+            if (taskToUpdate) {
+                res.render("index", { 
+                	task: taskToUpdate, 
+                	error: null,
+                	update: true
+                });
+            } 
+        })
+       
+});
+
+app.post('/update-task/:taskId', (req, res) => {
+    const updatedTaskId = parseInt(req.params.taskId);
+    const updatedTask = req.body.updatedTask;
+    let update = true;
+    if (!updatedTask || updatedTask.trim().length === 0) {
+        readFile("./tasks.json")
+            .then(tasks => {
+                res.render("index", {
+                    task: { id: updatedTaskId, task: updatedTask },
+                    error: "Please insert correct task data",
+                    update: update
+                });  
+            })
+	}else{
+    readFile("./tasks.json")
+        .then(tasks => {
+            const taskToUpdate = tasks.find(task => task.id === updatedTaskId);
+            if (taskToUpdate) {
+                taskToUpdate.task = updatedTask;
+                const data = JSON.stringify(tasks, null, 2);
+                console.log(`Task data from update form => ${JSON.stringify(tasks[req.params.taskId-1])}`) 
+                writeFile("tasks.json", data)
+                    .then(() => {
+                        res.redirect('/');
+                    })                    
+            } 
+        }) 
+	};
+});
+
+
+
+
 
 app.listen(3001, () => {
 	console.log("example app is started at http://localhost:3001")
